@@ -11,7 +11,7 @@
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
-                        <form class="form-horizontal form-label-left">
+                        {!! Form::model($model, ['route' => 'admin.product.store', 'method' => 'POST', 'class' => 'form-horizontal form-label-left', 'files' => 'true']) !!}
                             <p>All field has <code>*</code> is require
                             </p>
                             <span class="section"></span>
@@ -45,12 +45,12 @@
                                         <div class="col-md-4">
                                             <div class="form-inline">
                                                 {{--<button class="btn blue margin0" type="button"><i class="fa fa-plus"></i></button>--}}
-                                                <select class="form-control">
-                                                    <option>Tag</option>
-                                                    <option>ID</option>
-                                                    <option>Class</option>
+                                                <select name="type-0" class="form-control">
+                                                    <option value="0">Tag</option>
+                                                    <option value="1">ID</option>
+                                                    <option value="2">Class</option>
                                                 </select>
-                                                <input type="text" class="form-control">
+                                                <input name="html-0" type="text" class="form-control">
                                             </div>
                                         </div>
                                         <div class="col-md-2 no-padding">
@@ -63,12 +63,11 @@
                             <div class="ln_solid"></div>
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-3">
-                                    <button type="reset" class="btn btn-danger">Reset</button>
                                     <button type="button" class="btn btn-success">Save Setting</button>
-                                    {!! Form::submit('Start Crawl', ['class' => 'btn btn-primary', 'id' => 'send']) !!}
+                                    {!! Form::submit('Crawl', ['class' => 'btn btn-primary', 'id' => 'send']) !!}
                                 </div>
                             </div>
-                        </form>
+                        {!! Form::close() !!}
                     </div>
                 </div>
             </div>

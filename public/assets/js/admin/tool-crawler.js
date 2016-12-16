@@ -98,5 +98,6 @@ function selectedField() {
     var id = $('#hidID').val();
     var field = $('#selectField').val();
     $('#field-' + id).html(field);
+    $('#hid-field-' + id).html(field);
     $('#modalSelectField').modal('toggle');
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -16,12 +17,13 @@ class CrawlToolController extends Controller
 {
 
     /**
-     *
+     * show tool craweler
      */
     public function index() {
 
         $tables = $this->getTables();
-        return view('protected.admin.tool.create', compact('tables'));
+        $model = new Product();
+        return view('protected.admin.tool.create', compact('tables', 'model'));
     }
 
     /**
