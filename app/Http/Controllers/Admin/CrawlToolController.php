@@ -38,25 +38,26 @@ class CrawlToolController extends Controller
     }
 
     /**
-     *
+     * add form setting
      */
     public function addFormSetting(Request $request) {
         $id = $request->id;
-        return view('protected.admin.tool.form-setting', compact('id'));
+        $arrElm = explode('_', $id);
+        $margin = count($arrElm);
+        return view('protected.admin.tool.form-setting', compact('id', 'margin'));
     }
 
-    public function tmp() {
-        $tables = DB::select('SHOW TABLES');
-        //dd($tables[0]->Tables_in_buy_theme);
-        foreach($tables as $tab) {
-            $columns = Schema::getColumnListing($tab->Tables_in_buy_theme);
-            foreach($columns as $key => $col) {
-                $col = DB::connection()->getDoctrineColumn($tab->Tables_in_buy_theme, $col);
-                $columns[$key] = $col;
-            }
-            $tab->columns = $columns;
+    /**
+     * get table field
+     */
+    public function getTableField(Request $request) {
+        $tableName = $request->tableName;
+        $columns = Schema::getColumnListing($tableName);
+        $fields = array("" => "select one");
+        foreach($columns as $col) {
+            $fields[$col] = $col;
         }
 
-        return $tables;
+        return view('protected.admin.tool.select-box', compact('fields'));
     }
 }

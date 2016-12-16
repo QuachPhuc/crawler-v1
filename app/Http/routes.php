@@ -59,6 +59,6 @@
             #crawl tool
             Route::get('/tool', 'Admin\CrawlToolController@index');
             Route::post('/add-form-setting', ['as' => 'add-form-setting', 'uses' => 'Admin\CrawlToolController@addFormSetting']);
-
+            Route::post('/get-table-field', ['as' => 'get-table-field', 'uses' => 'Admin\CrawlToolController@getTableField']);
         });
     });
