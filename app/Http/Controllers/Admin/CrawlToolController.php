@@ -8,6 +8,8 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Session;
+use Yangqi\Htmldom\Htmldom;
 
 /**
  * Class CrawlToolController
@@ -61,5 +63,97 @@ class CrawlToolController extends Controller
         }
 
         return view('protected.admin.tool.select-box', compact('fields'));
+    }
+
+    /**
+     * @param Request $request
+     */
+    public function store(Request $request) {
+        $table = $request->table;
+        $url = $request->url;
+        $tags = $request->tags;
+        $htmls = $request->htmls;
+        $hid_fields = $request->hid_fields;
+        $depths = $request->depths;
+        $types = $request->types;
+        $data = array();
+        $arrDepths = $this->divDepth($depths);
+
+       //dd($arrDepths);
+
+        $page = new Htmldom($url);
+
+        foreach($arrDepths as $depth) {
+            $data = $this->lastValue($data, $page, $depth, $tags, $htmls, $types, $hid_fields, 0);
+        }
+
+        dd($data);
+    }
+
+    /**
+     * @param $data
+     * @param $page
+     * @param $depths
+     * @param $tags
+     * @param $htmls
+     * @param $types
+     * @param $hid_fields
+     * @param int $count
+     * @return mixed
+     */
+    public function lastValue($data, $page, $depths, $tags, $htmls, $types, $hid_fields, $count) {
+        $length = count($depths);
+        $tag = $tags[$depths[$count]] . '[' . $htmls[$depths[$count]] . ']';
+        $type = $count > 0 ? $types[$depths[$count]] : '';
+        $hid_field = $count > 0 ? $hid_fields[$depths[$count]] : '';
+
+        foreach ($page->find($tag) as $item) {
+            if($type == '0') {
+                // get text
+                $data[$hid_field][] = $item->plaintext;
+            }
+
+            if($type == '1') {
+                //upload image
+                $data[$hid_field][] = $item->src;
+            }
+
+            if($type == '2') {
+                //get link
+                $data[$hid_field][] = $item->href;
+            }
+
+            if($count < $length - 1) {
+                $count ++;
+                $data = $this->lastValue($data, $item, $depths, $tags, $htmls, $types, $hid_fields, $count);
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param $depths
+     * @return array
+     */
+    public function divDepth($depths) {
+        $arrDepths = array();
+        $parentKey = 0;
+        $count = 0;
+        foreach($depths as $key => $depth) {
+            $arrTmp = explode('_', $depth);
+            if(count($arrTmp) > $count) {
+                $arrDepths[$parentKey][] = $depth;
+                $count = count($arrTmp);
+            } else {
+                $parentKey ++;
+                for($i = 0; $i< count($arrTmp) - 1; $i ++) {
+                    $arrDepths[$parentKey][] = $depths[$i];
+                }
+                $arrDepths[$parentKey][] = $depth;
+                $count = count($arrTmp);
+            }
+        }
+        return $arrDepths;
     }
 }

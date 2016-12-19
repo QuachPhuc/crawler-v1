@@ -11,7 +11,7 @@
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
-                        {!! Form::model($model, ['route' => 'admin.product.store', 'method' => 'POST', 'class' => 'form-horizontal form-label-left', 'files' => 'true']) !!}
+                        {!! Form::model($model, ['route' => 'admin.tool.store', 'method' => 'POST', 'class' => 'form-horizontal form-label-left', 'files' => 'true']) !!}
                             <p>All field has <code>*</code> is require
                             </p>
                             <span class="section"></span>
@@ -45,12 +45,24 @@
                                         <div class="col-md-4">
                                             <div class="form-inline">
                                                 {{--<button class="btn blue margin0" type="button"><i class="fa fa-plus"></i></button>--}}
-                                                <select name="type-0" class="form-control">
-                                                    <option value="0">Tag</option>
-                                                    <option value="1">ID</option>
-                                                    <option value="2">Class</option>
+                                                <select name="tags[0]" class="form-control">
+                                                    <option value="div">div</option>
+                                                    <option value="ul">ul</option>
+                                                    <option value="li">li</option>
+                                                    <option value="p">p</option>
+                                                    <option value="span">span</option>
+                                                    <option value="a">link a</option>
+                                                    <option value="img">img</option>
+                                                    <option value="h1">h1</option>
+                                                    <option value="h2">h2</option>
+                                                    <option value="h3">h3</option>
+                                                    <option value="h4">h4</option>
+                                                    <option value="h4">h5</option>
+                                                    <option value="b">b</option>
+                                                    <option value="i">i</option>
                                                 </select>
-                                                <input name="html-0" type="text" class="form-control">
+                                                <input name="htmls[0]" type="text" class="form-control">
+                                                <input type="hidden" name="depths[]" value="0">
                                             </div>
                                         </div>
                                         <div class="col-md-2 no-padding">
