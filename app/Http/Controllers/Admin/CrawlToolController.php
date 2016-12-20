@@ -103,7 +103,7 @@ class CrawlToolController extends Controller
      */
     public function lastValue($data, $page, $depths, $tags, $htmls, $types, $hid_fields, $count) {
         $length = count($depths);
-        $tag = $tags[$depths[$count]] . '[' . $htmls[$depths[$count]] . ']';
+        $tag = $htmls[$depths[$count]] != "" ? $tags[$depths[$count]] . '[' . $htmls[$depths[$count]] . ']' : $tags[$depths[$count]];
         $type = $count > 0 ? $types[$depths[$count]] : '';
         $hid_field = $count > 0 ? $hid_fields[$depths[$count]] : '';
 
@@ -126,6 +126,7 @@ class CrawlToolController extends Controller
             if($count < $length - 1) {
                 $count ++;
                 $data = $this->lastValue($data, $item, $depths, $tags, $htmls, $types, $hid_fields, $count);
+                $count --;
             }
         }
 
