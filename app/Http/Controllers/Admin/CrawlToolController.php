@@ -79,8 +79,7 @@ class CrawlToolController extends Controller
         $data = array();
         $arrDepths = $this->divDepth($depths);
 
-       //dd($arrDepths);
-
+        // Start clone content
         $page = new Htmldom($url);
 
         foreach($arrDepths as $depth) {
