@@ -11,7 +11,7 @@
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
-                        {!! Form::model($model, ['route' => 'admin.tool.store', 'method' => 'POST', 'class' => 'form-horizontal form-label-left', 'files' => 'true']) !!}
+                        {!! Form::model($model, ['route' => 'admin.tool.store', 'method' => 'POST', 'class' => 'form-horizontal form-label-left','id' => 'form-setting', 'files' => 'true']) !!}
                             <p>All field has <code>*</code> is require
                             </p>
                             <span class="section"></span>
@@ -21,6 +21,16 @@
                                 </label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     {!! Form::select('tables', $tables, null,['id' => 'selectTable', 'class' => 'form-control'] ) !!}
+                                </div>
+
+                                <label class="control-label col-md-2 col-sm-2 col-xs-12" for="last_name">Setting Name
+                                </label>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    {!! Form::text('sName', null, [
+                                    'placeholder' => '',
+                                    'id' => 'setting-name',
+                                    'class' => 'form-control col-md-7 col-xs-12',
+                                    ])!!}
                                 </div>
                             </div>
 
@@ -33,6 +43,12 @@
                                     'id' => 'url',
                                     'class' => 'form-control col-md-7 col-xs-12',
                                     'required' => 'required'])!!}
+                                </div>
+
+                                <label class="control-label col-md-2 col-sm-2 col-xs-12" for="name">Setting
+                                </label>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    {!! Form::select('setting', $settings, null,['id' => 'select-setting', 'class' => 'form-control'] ) !!}
                                 </div>
                             </div>
                             <div class="ln_solid"></div>
@@ -75,7 +91,7 @@
                             <div class="ln_solid"></div>
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-3">
-                                    <button type="button" class="btn btn-success">Save Setting</button>
+                                    <button onclick="save_setting()" type="button" class="btn btn-success">Save Setting</button>
                                     {!! Form::submit('Crawl', ['class' => 'btn btn-primary', 'id' => 'send']) !!}
                                 </div>
                             </div>

@@ -1,6 +1,18 @@
-$(document).ready(function () {
-
-});
+$.fn.serializeObject = function () {
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function () {
+        if (o[this.name] !== undefined) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+    return o;
+};
 
 /*
 * add new element
@@ -101,3 +113,34 @@ function selectedField() {
     $('#hid-field-' + id).val(field);
     $('#modalSelectField').modal('toggle');
 }
+
+function save_setting() {
+    var form = $('#form-setting');
+    $.ajax({
+        type : 'POST',
+        data: {
+            'data' : form.serializeObject()
+        },
+        url : SITE_ROOT + 'save-setting',
+        success : function(data) {
+            alert(data);
+        }
+    });
+}
+
+/*
+* load setting
+* */
+$('#select-setting').on('change', function() {
+    var value = $(this).val();
+    $.ajax({
+        type : 'POST',
+        data: {
+            'order' : value
+        },
+        url : SITE_ROOT + 'load-setting',
+        success : function(data) {
+            $('#setting-html-row').html(data);
+        }
+    });
+});

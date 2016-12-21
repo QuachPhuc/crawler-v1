@@ -29,16 +29,16 @@
             <button onclick="selectField('{{$id}}')" class="btn green margin0" type="button"><i class="fa fa-paper-plane-o"></i></button>
         </div>
         <div class="col-md-2">
-            <label id="field-{{$id}}" class="control-label col-md-1 col-sm-1 col-xs-12">
+            <label id="field-{{$id}}" class="control-label col-md-1 col-sm-1 col-xs-12 text-left">
             </label>
             <input type="hidden" name="hid_fields[{{$id}}]" value="" id="hid-field-{{$id}}">
         </div>
         <div class="col-md-2">
             <select name="types[{{$id}}]" class="form-control">
-                <option value="">select type</option>
-                <option value="0">text</option>
-                <option value="1">image</option>
-                <option value="2">link</option>
+                <option value="0">select type</option>
+                <option value="1">text</option>
+                <option value="2">image</option>
+                <option value="3">link</option>
             </select>
         </div>
     </div>

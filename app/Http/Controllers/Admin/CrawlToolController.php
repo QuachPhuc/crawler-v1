@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use App\Models\Product;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Session;
 use Yangqi\Htmldom\Htmldom;
@@ -24,8 +27,9 @@ class CrawlToolController extends Controller
     public function index() {
 
         $tables = $this->getTables();
+        $settings = $this->getSetting();
         $model = new Product();
-        return view('protected.admin.tool.create', compact('tables', 'model'));
+        return view('protected.admin.tool.create', compact('tables', 'model', 'settings'));
     }
 
     /**
@@ -39,6 +43,19 @@ class CrawlToolController extends Controller
         }
 
         return $tableList;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSetting() {
+        $orders = Order::all();
+        $orderList = array("" => "select one");
+        foreach($orders as $od) {
+            $orderList[$od->id] = $od->name;
+        }
+
+        return $orderList;
     }
 
     /**
@@ -107,17 +124,17 @@ class CrawlToolController extends Controller
         $hid_field = $count > 0 ? $hid_fields[$depths[$count]] : '';
 
         foreach ($page->find($tag) as $item) {
-            if($type == '0') {
+            if($type == '1') {
                 // get text
                 $data[$hid_field][] = $item->plaintext;
             }
 
-            if($type == '1') {
+            if($type == '2') {
                 //upload image
                 $data[$hid_field][] = $item->src;
             }
 
-            if($type == '2') {
+            if($type == '3') {
                 //get link
                 $data[$hid_field][] = $item->href;
             }
@@ -156,4 +173,94 @@ class CrawlToolController extends Controller
         }
         return $arrDepths;
     }
-}
+
+    /**
+     * @param Request $request
+     */
+    public function saveSetting(Request $request) {
+        $data = $request->data;
+        $table = $data['tables'];
+        $url = $data['url'];
+        $sName = $data['sName'];
+        $setting = $data['setting'];
+
+        $tags = array();
+        $htmls = array();
+        $types = array();
+        $depths = array();
+        $hid_fields = array();
+
+        //unset data not an array
+        unset($data['_token']);
+        unset($data['tables']);
+        unset($data['url']);
+        unset($data['sName']);
+        unset($data['setting']);
+
+        // convert data for each array
+        foreach ($data as $key => $item) {
+            $arrExplodeKey = explode('[', $key);
+            if(count($arrExplodeKey) <= 1) {
+                continue;
+            }
+            $arrExplodeValue = explode(']', $arrExplodeKey[1]);
+            switch($arrExplodeKey[0]) {
+                case 'tags' :
+                    $tags[$arrExplodeValue[0]] = $item;
+                    break;
+
+                case 'htmls' :
+                    $htmls[$arrExplodeValue[0]] = $item;
+                    break;
+
+                case 'types' :
+                    $types[$arrExplodeValue[0]] = $item;
+                    break;
+
+                case 'depths' :
+                    $depths[$arrExplodeValue[0]] = $item;
+                    break;
+
+                case 'hid_fields' :
+                    $hid_fields[$arrExplodeValue[0]] = $item;
+                    break;
+            }
+        }
+
+        //save data into table order
+        $order = new Order();
+        $order->name = $sName;
+        $order->save();
+
+        //save data into table settings
+        $isSave = false;
+        foreach($tags as $key => $tag) {
+            $setting = new Setting();
+            $setting->table = $table;
+            $setting->url = $url;
+            $setting->order = $order->id;
+            $setting->tag = $tag;
+            $setting->name = $key;
+            $setting->html = isset($htmls[$key]) ? $htmls[$key] : '';
+            $setting->type = isset($types[$key]) ? $types[$key] : 0;
+            $setting->field = isset($hid_fields[$key]) ? $hid_fields[$key] : '';
+            $isSave = $setting->save();
+        }
+
+        return Response::json($isSave);
+    }
+
+    /**
+     *
+     */
+    public function loadSetting(Request $request) {
+        $order_id = $request->order;
+        $settings = Setting::where('order', $order_id)->get();
+        $a =  view('protected.admin.tool.form-load-setting', compact('settings'));
+        dd($a);
+    }
+
+    public function renderHTML($setting, $count) {
+
+    }
+} //class
