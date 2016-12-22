@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 
+use App\Commons\Common;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Product;
@@ -28,8 +29,9 @@ class CrawlToolController extends Controller
 
         $tables = $this->getTables();
         $settings = $this->getSetting();
+        $tags = Common::$TAGS;
         $model = new Product();
-        return view('protected.admin.tool.create', compact('tables', 'model', 'settings'));
+        return view('protected.admin.tool.create', compact('tables', 'model', 'settings', 'tags'));
     }
 
     /**
@@ -65,7 +67,9 @@ class CrawlToolController extends Controller
         $id = $request->id;
         $arrElm = explode('_', $id);
         $margin = count($arrElm);
-        return view('protected.admin.tool.form-setting', compact('id', 'margin'));
+        $tags = Common::$TAGS;
+        $types = Common::$TYPES;
+        return view('protected.admin.tool.form-setting', compact('id', 'margin', 'tags', 'types'));
     }
 
     /**
@@ -251,16 +255,26 @@ class CrawlToolController extends Controller
     }
 
     /**
-     *
+     * @param Request $request
+     * @return mixed
      */
     public function loadSetting(Request $request) {
         $order_id = $request->order;
         $settings = Setting::where('order', $order_id)->get();
-        $a =  view('protected.admin.tool.form-load-setting', compact('settings'));
-        dd($a);
+        return Response::json($settings);
     }
 
-    public function renderHTML($setting, $count) {
-
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function loadSettingItem(Request $request) {
+        $id = $request->id;
+        $setting = Setting::find($id);
+        $arrElm = explode('_', $setting->name);
+        $margin = count($arrElm);
+        $tags = Common::$TAGS;
+        $types = Common::$TYPES;
+        return view('protected.admin.tool.form-load-setting', compact('setting', 'margin', 'tags', 'types'));
     }
 } //class

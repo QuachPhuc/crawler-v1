@@ -133,14 +133,49 @@ function save_setting() {
 * */
 $('#select-setting').on('change', function() {
     var value = $(this).val();
-    $.ajax({
+    var a = $.ajax({
         type : 'POST',
         data: {
             'order' : value
         },
         url : SITE_ROOT + 'load-setting',
         success : function(data) {
-            $('#setting-html-row').html(data);
+           $.each(data, function() {
+               $('#selectTable').val(this.table);
+               $('#url').val(this.url);
+               //load item
+               var parent = findParent(this.name);
+               $.ajax({
+                   type : 'POST',
+                   data: {
+                       'id' : this.id
+                   },
+                   url : SITE_ROOT + 'load-setting-item',
+                   success : function(data) {
+                   }
+               }).done(function(data) {
+                   if(parent == '') {
+                       $('#setting-html-row').html(data);
+                   } else {
+                       var firstChild = $('#' + parent).children().first();
+                       $(data).insertAfter($(firstChild));
+                   }
+               });
+           });
         }
     });
 });
+
+/*
+* function find parent for id of children
+* */
+function findParent(id) {
+    var arrExp = id.split('_');
+    var parent = '';
+    if(arrExp.length > 1) {
+        arrExp.pop();
+        var parent = arrExp.join('_');
+    }
+
+    return parent;
+}

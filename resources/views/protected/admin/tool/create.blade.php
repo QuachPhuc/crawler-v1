@@ -60,23 +60,7 @@
                                     <div class="row marginTop10">
                                         <div class="col-md-4">
                                             <div class="form-inline">
-                                                {{--<button class="btn blue margin0" type="button"><i class="fa fa-plus"></i></button>--}}
-                                                <select name="tags[0]" class="form-control">
-                                                    <option value="div">div</option>
-                                                    <option value="ul">ul</option>
-                                                    <option value="li">li</option>
-                                                    <option value="p">p</option>
-                                                    <option value="span">span</option>
-                                                    <option value="a">link a</option>
-                                                    <option value="img">img</option>
-                                                    <option value="h1">h1</option>
-                                                    <option value="h2">h2</option>
-                                                    <option value="h3">h3</option>
-                                                    <option value="h4">h4</option>
-                                                    <option value="h4">h5</option>
-                                                    <option value="b">b</option>
-                                                    <option value="i">i</option>
-                                                </select>
+                                                {!! Form::select('tags[0]', $tags, null,['class' => 'form-control'] ) !!}
                                                 <input name="htmls[0]" type="text" class="form-control">
                                                 <input type="hidden" name="depths[]" value="0">
                                             </div>
